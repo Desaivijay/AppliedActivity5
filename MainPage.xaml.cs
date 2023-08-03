@@ -1,24 +1,47 @@
-﻿namespace AppliedActivity5;
+﻿using Microsoft.Maui.Controls;
 
-public partial class MainPage : ContentPage
+using System.Collections.ObjectModel;
+using System.IO;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
+
+namespace AppliedActivity5
 {
-	int count = 0;
+    public partial class MainPage : ContentPage
+    {
+        private readonly string _databasePath;
+        private readonly DatabaseContext _db;
 
-	public MainPage()
-	{
-		InitializeComponent();
-	}
+        public ObservableCollection<Student> Students { get; set; }
+        public ObservableCollection<Course> Courses { get; set; }
 
-	private void OnCounterClicked(object sender, EventArgs e)
-	{
-		count++;
+        public MainPage()
+        {
+            InitializeComponent();
 
-		if (count == 1)
-			CounterBtn.Text = $"Clicked {count} time";
-		else
-			CounterBtn.Text = $"Clicked {count} times";
+            _databasePath = Path.Combine(FileSystem.AppDataDirectory, "database.db");
+            _db = new DatabaseContext(_databasePath);
 
-		SemanticScreenReader.Announce(CounterBtn.Text);
-	}
+            Students = new ObservableCollection<Student>(_db.Students.ToList());
+            Courses = new ObservableCollection<Course>(_db.Courses.ToList());
+
+            StudentsListView.ItemsSource = Students;
+            CoursesListView.ItemsSource = Courses;
+        }
+
+        private void OnCounterClicked(object sender, EventArgs e)
+        {
+            // ... (rest of the counter click logic)
+        }
+
+        private void OnStudentTapped(object sender, ItemTappedEventArgs e)
+        {
+            // Implement logic to navigate to the page for editing the selected student.
+        }
+
+        private void OnCourseTapped(object sender, ItemTappedEventArgs e)
+        {
+            // Implement logic to navigate to the page for editing the selected course.
+        }
+    }
 }
-
